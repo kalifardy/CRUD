@@ -3,16 +3,18 @@ package com.app.keyalive.crudjava;
 import android.app.DatePickerDialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,13 +37,19 @@ public class UpdateData extends AppCompatActivity {
     private TextView textView5;
     private EditText edtAlamat;
     private Button btnSimpan;
-     TextView txtNo;
-     TextView txtNama;
-     TextView txtTglLair;
-     TextView txtJenkel;
+    TextView txtNo;
+    TextView txtNama;
+    TextView txtTglLair;
+    TextView txtJenkel;
     TextView txtAlamat;
     private Button btnBack;
     DataHelper dbhelper;
+    private RadioGroup rbKelamin;
+    private RadioButton RbLk;
+    private RadioButton RbPr;
+    private Spinner spinnerPendidikan;
+    String[] items={"--Pilih Pendidikan--","SD", "SMP","SMA","D3","S1","S2","S3"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +72,14 @@ public class UpdateData extends AppCompatActivity {
         edtAlamat = findViewById(R.id.edt_alamat);
         btnSimpan = findViewById(R.id.btn_simpan);
         btnBack = findViewById(R.id.btn_back);
+        rbKelamin = findViewById(R.id.rb_kelamin);
+        RbLk = findViewById(R.id.Rb_lk);
+        RbPr = findViewById(R.id.Rb_pr);
+       spinnerPendidikan = findViewById(R.id.spinner_pendidikan);
+
+
+       ArrayAdapter<String> a=new ArrayAdapter<String>(UpdateData.this,android.R.layout.simple_spinner_item,items);
+        a.setDropDownViewResource(android.R.layout.simple_spinner_item);spinnerPendidikan.setAdapter(a);
 
         edtTgllahir.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,34 +94,35 @@ public class UpdateData extends AppCompatActivity {
                         Calendar newDate = Calendar.getInstance();
                         newDate.set(year, monthOfYear, dayOfMonth);
                         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-                        edtTgllahir.setText(" "+dateFormatter.format(newDate.getTime()));
+                        edtTgllahir.setText(" " + dateFormatter.format(newDate.getTime()));
                     }
 
-                },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+                }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
                 datePickerDialog.show();
             }
         });
 
 
-
-        SQLiteDatabase db= dbhelper.getReadableDatabase();
-        cursor=db.rawQuery("SELECT*FROM biodata WHERE nama='"+getIntent().getStringExtra("nama")+"'",null);
+        SQLiteDatabase db = dbhelper.getReadableDatabase();
+        cursor = db.rawQuery("SELECT*FROM biodata WHERE nama='" + getIntent().getStringExtra("nama") + "'", null);
         cursor.moveToFirst();
-        if (cursor.getCount()>0){
+        if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
 
             edtNomor.setText(cursor.getString(0).toString());
             edtNama.setText(cursor.getString(1).toString());
             edtTgllahir.setText(cursor.getString(2).toString());
-            Log.d("UpdateData", "onCreate: "+cursor.getString(3).toString());
-            if (cursor.getString(3).toString().equals("LAKI LAKI")){
+            Log.d("UpdateData", "onCreate: " + cursor.getString(3).toString());
+            if (cursor.getString(3).toString().equals("LAKI LAKI")) {
 
                 rblk.setChecked(true);
-            }else {
+            } else {
                 rbpr.setChecked(true);
             }
             edtAlamat.setText(cursor.getString(4).toString());
+
+          spinnerPendidikan.setSelection(5);
         }
 
 
@@ -114,17 +131,18 @@ public class UpdateData extends AppCompatActivity {
             public void onClick(View arg0) {
                 SQLiteDatabase db = dbhelper.getWritableDatabase();
 
-                int gender=rbkelamin.getCheckedRadioButtonId();
-                RadioButton jk=(RadioButton)findViewById(gender);
-                String inputjk= String.valueOf(jk.getText().toString());
+                int gender = rbkelamin.getCheckedRadioButtonId();
+                RadioButton jk = (RadioButton) findViewById(gender);
+                String inputjk = String.valueOf(jk.getText().toString());
 
-                db.execSQL("update biodata set nama='"+edtNama.getText().toString()+
-                        "', tgl_lahir='"+edtTgllahir.getText().toString()+
-                                "', jenkel='"+inputjk+
-                        "', alamat='"+edtAlamat.getText().toString()+
-                        "' where nomor='"+edtNomor.getText().toString()+"'");
+                db.execSQL("update biodata set nama='" + edtNama.getText().toString() +
+                        "', tgl_lahir='" + edtTgllahir.getText().toString() +
+                        "', jenkel='" + inputjk +
+                        "', alamat='" + edtAlamat.getText().toString() +
+                       "', pendidikan='" + spinnerPendidikan.getSelectedItem().toString() +
+                        "' where nomor='" + edtNomor.getText().toString() + "'");
 
-                Toast.makeText(getApplicationContext(),"Data telah di edit",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Data telah di edit", Toast.LENGTH_SHORT).show();
                 MainActivity.ma.RefreshList();
                 finish();
             }
@@ -135,6 +153,7 @@ public class UpdateData extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
 
@@ -144,5 +163,6 @@ public class UpdateData extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
 
 }

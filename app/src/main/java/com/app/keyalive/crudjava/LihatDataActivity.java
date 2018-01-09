@@ -24,6 +24,7 @@ public class LihatDataActivity extends AppCompatActivity {
     private TextView txtJenkel;
     private TextView txtAlamat;
     private Button button1;
+    private TextView txtPendidikan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +40,21 @@ public class LihatDataActivity extends AppCompatActivity {
         txtTglLair = findViewById(R.id.txt_tgl_lair);
         txtJenkel = findViewById(R.id.txt_jenkel);
         txtAlamat = findViewById(R.id.txt_alamat);
+     txtPendidikan = findViewById(R.id.txt_pendidikan);
+
         button1 = findViewById(R.id.button1);
 
         SQLiteDatabase db = dbhelper.getReadableDatabase();
-        cursor=db.rawQuery("SELECT * FROM biodata WHERE nama='"+getIntent().getStringExtra("nama")+"'",null);
+        cursor = db.rawQuery("SELECT * FROM biodata WHERE nama='" + getIntent().getStringExtra("nama") + "'", null);
         cursor.moveToFirst();
-        if (cursor.getCount()>0){
+        if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
             txtNo.setText(cursor.getString(0).toString());
             txtNama.setText(cursor.getString(1).toString());
             txtJenkel.setText(cursor.getString(3).toString());
             txtTglLair.setText(cursor.getString(2).toString());
             txtAlamat.setText(cursor.getString(4).toString());
+          txtPendidikan.setText(cursor.getString(5).toString());
         }
 
         button1.setOnClickListener(new View.OnClickListener() {
@@ -67,4 +71,6 @@ public class LihatDataActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+
 }

@@ -66,6 +66,14 @@
                android:layout_alignLeft="@+id/TextView03"
                android:text="Alamat"
                android:textSize="20sp" />
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignBaseline="@+id/textView5"
+               android:layout_alignBottom="@+id/textView5"
+               android:layout_alignLeft="@+id/TextView03"
+               android:text="Pendidikan"
+               android:textSize="20sp" />
 
 
 
@@ -113,11 +121,17 @@
                android:id="@+id/txt_alamat"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-
+               android:text="TextView"
+               android:textSize="20sp" />
+           <TextView
+               android:id="@+id/txt_pendidikan"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
                android:text="TextView"
                android:textSize="20sp" />
 
-       />
+
+           />
        </LinearLayout>
    </LinearLayout>
 

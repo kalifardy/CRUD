@@ -14,7 +14,7 @@ public class DataHelper extends SQLiteOpenHelper{
 
 //    membuat database
     private static final String NameDb ="biodatadiri.db";
-    private static final int Database_Ver = 2 ;
+    private static final int Database_Ver = 1 ;
 
     public DataHelper(Context context) {
         super(context, NameDb, null, Database_Ver);
@@ -23,10 +23,10 @@ public class DataHelper extends SQLiteOpenHelper{
 //  membuat Table
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "create table biodata (nomor integer primary key,nama text null,tgl_lahir text null,jenkel text null,alamat text null);";
+        String sql = "create table biodata (nomor text null,nama text null,tgl_lahir text null,jenkel text null,alamat text null,pendidikan text null);";
         Log.d("Data","onCreate"+sql);
         db.execSQL(sql);
-        sql = "insert into biodata (nomor, nama, tgl_lahir, jenkel, alamat) values ('', '', '', '','');";
+        sql = "insert into biodata (nomor, nama, tgl_lahir, jenkel, alamat, pendidikan) values ('01', 'kalif', '19101996 ', 'LAKI LAKI ', 'PASADENA', 'D3');";
         db.execSQL(sql);
 
     }

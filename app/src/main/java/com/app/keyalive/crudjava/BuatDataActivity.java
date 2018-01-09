@@ -5,13 +5,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Selection;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +33,13 @@ public class BuatDataActivity extends AppCompatActivity {
     private TextView textView3;
     private EditText edtTgllahir;
     private TextView textView4;
-     RadioGroup rbkelamin;
+    RadioGroup rbkelamin;
     private TextView textView5;
     private EditText edtAlamat;
     private Button btnSimpan;
     private Button btnBack;
+
+    String[] items={"--Pilih Pendidikan--","SD", "SMP","SMA","D3","S1","S2","S3"};
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat(
             "yyyy-MM-dd", Locale.ENGLISH);
@@ -40,13 +47,17 @@ public class BuatDataActivity extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     Calendar dateCalendar;
     DataHelper dbhelper;
+    private RadioGroup rbKelamin;
+    private RadioButton RbLk;
+    private RadioButton RbPr;
+    private Spinner spinnerPendidikan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buat_data);
 
-         dbhelper = new DataHelper(this);
+        dbhelper = new DataHelper(this);
 
         textView1 = findViewById(R.id.textView1);
         edtNomor = findViewById(R.id.edt_nomor);
@@ -60,44 +71,51 @@ public class BuatDataActivity extends AppCompatActivity {
         edtAlamat = findViewById(R.id.edt_alamat);
         btnSimpan = findViewById(R.id.btn_simpan);
         btnBack = findViewById(R.id.btn_back);
+        spinnerPendidikan = findViewById(R.id.spinner_pendidikan);
 
-edtTgllahir.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        Calendar newCalendar = Calendar.getInstance();
+        ArrayAdapter<String> a=new ArrayAdapter<String>(BuatDataActivity.this,android.R.layout.simple_spinner_item,items);
+        a.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spinnerPendidikan.setAdapter(a);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(BuatDataActivity.this, new DatePickerDialog.OnDateSetListener() {
 
+        edtTgllahir.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            public void onClick(View v) {
+                Calendar newCalendar = Calendar.getInstance();
 
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-                edtTgllahir.setText(" "+dateFormatter.format(newDate.getTime()));
+                DatePickerDialog datePickerDialog = new DatePickerDialog(BuatDataActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                        Calendar newDate = Calendar.getInstance();
+                        newDate.set(year, monthOfYear, dayOfMonth);
+                        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                        edtTgllahir.setText(" " + dateFormatter.format(newDate.getTime()));
+                    }
+
+                }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+                datePickerDialog.show();
             }
-
-        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-
-        datePickerDialog.show();
-    }
-});
+        });
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 SQLiteDatabase db = dbhelper.getWritableDatabase();
 
-                int gender=rbkelamin.getCheckedRadioButtonId();
-                RadioButton jk=(RadioButton)findViewById(gender);
-                String inputjk= String.valueOf(jk.getText().toString());
+                int gender = rbkelamin.getCheckedRadioButtonId();
+                RadioButton jk = (RadioButton) findViewById(gender);
+                String inputjk = String.valueOf(jk.getText().toString());
 
-                db.execSQL("insert into biodata (nomor, nama, tgl_lahir, jenkel, alamat) values('"+
-                        edtNomor.getText().toString()+"','"+
-                        edtNama.getText().toString()+"','"+
-                        edtTgllahir.getText().toString()+"','"+
-                        inputjk+"','"+
-                        edtAlamat.getText().toString()+"')");
-                        Toast.makeText(getApplicationContext(),"Data telah disimpan",Toast.LENGTH_SHORT).show();
+                db.execSQL("insert into biodata (nomor, nama, tgl_lahir, jenkel, alamat, pendidikan) values('" +
+                        edtNomor.getText().toString() + "','" +
+                        edtNama.getText().toString() + "','" +
+                        edtTgllahir.getText().toString() + "','" +
+                        inputjk + "','" +
+                               edtAlamat.getText().toString() + "','" +
+                        spinnerPendidikan.getSelectedItem().toString() + "')");
+                Toast.makeText(getApplicationContext(), "Data telah disimpan", Toast.LENGTH_SHORT).show();
                 MainActivity.ma.RefreshList();
                 finish();
             }
@@ -109,6 +127,7 @@ edtTgllahir.setOnClickListener(new View.OnClickListener() {
             }
         });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
