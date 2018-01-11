@@ -64,6 +64,9 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView3"
         android:layout_below="@+id/textView3"
+        android:textIsSelectable="true"
+        android:drawableLeft="@drawable/ic_action_date"
+        android:hint="Masukan Tanggal"
         android:singleLine="true"/>
 
     <TextView
