@@ -9,13 +9,13 @@
     tools:context="com.app.keyalive.crudjava.MainActivity">
 
     <Button
+        android:id="@+id/btn_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Buat Data Baru"
-        android:textSize="20sp"
         android:layout_gravity="center"
+        android:text="Buat Data Baru"
         android:textAllCaps="false"
-        android:id="@+id/btn_create"/>
+        android:textSize="20sp" />
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
